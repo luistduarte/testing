@@ -1,0 +1,148 @@
+u
+use test
+ls
+db.createCollection('wallets')
+db.createCollection('shops')
+db.createCollection('rates')
+db.createCollection('dataobjects')
+ls
+db.shops.insert({ "id": "1", "name": "Loja do IT", "description": "A Loja IT", "picture": "https://xpto/manel.gif", "opening-hours": { "monday": "['09:00-12:00', '13:00-18:00']", "sunday": "[]", "exceptions": { "2016-11-11": "['09:00-12:00']", "2016-12-25": "[]", "01-01": "[]", "12-25": "['09:00-12:00']" } }, "location": { "degrees-latitude": 40.634173, "degrees-longitude": -8.660073 } })
+;
+)
+use test
+;
+use test
+db.shops.insert({ "id": "2", "name": "TECHTRIS HOUSE - ENTER", "description": " ENTERRRR", "picture": "https://xpto/manel.gif", "opening-hours": { "monday": "['09:00-12:00', '13:00-18:00']", "sunday": "[]", "exceptions": { "2016-11-11": "['09:00-12:00']", "2016-12-25": "[]", "01-01": "[]", "12-25": "['09:00-12:00']" } }, "location": { "degrees-latitude": 38.708199, "degrees-longitude": -9.147116 } })
+use test
+db.shops.insert({ "id": "3", "name": "Altice Labs", "description": "Alb  -  aveiro", "picture": "https://xpto/manel.gif", "opening-hours": { "monday": "['09:00-12:00', '13:00-18:00']", "sunday": "[]", "exceptions": { "2016-11-11": "['09:00-12:00']", "2016-12-25": "[]", "01-01": "[]", "12-25": "['09:00-12:00']" } }, "location": { "degrees-latitude":40.629571,                 "degrees-longitude": -8.646709 } } )
+db.shops.find)
+db.shops.find()
+use test
+db.shops.find()
+use test
+ls
+db.getCollectionNames()
+db.dataobjects.find()
+db.dataobjects.find
+db.dataobjects.find()
+db.shops.find()
+db.dataobjects.find()
+db.getCollectionNames()
+db.dataobjects.find()
+db.dataobjects
+db.shops.find()
+use test
+ls
+db.getCollectionNames()
+db.dataobjects.find()
+db.dataobjects.find({})
+use test
+db.dataobjects.find()
+db.dataobjects.delete({})
+db.dataobjects.deleteOne({})
+db.dataobjects.find()
+use test
+db.createCollection('elearnings')
+ls
+db.elearnings.insert({ "type": "mini-quizz", "name": "Energias Renováveis", "description": "Energy quizz for children", "picture": "", "age": "6-12 years old", "date": "2018-10-01", "value": 10, "questions": [{ "id": 1, "question": "Em 2016, qual a percentagem de energia distribuída em Portugal que teve origem em fontes renováveis?", "answers": ["13%", "4%", "24%"], "correctAnswer": 2, "hint": "" }, { "id": 2, "question": "Acabe a seguinte frase: em apenas uma hora, a luz do sol que incide na terra produz energia suficiente para alimentar todo o planeta durante:", "answers": ["1 ano", "6 meses", "20 horas", "1 hora"], "correctAnswer": 0, "hint": "" }, { "id": 3, "question": "Qual das seguintes fontes de produção de energia não é uma fonte renovável?", "answers": ["Eólica", "Gás Natural", "Solar", "Geotérmica"], "correctAnswer": 1, "hint": "" }] })
+use test
+db.elearnings.insert({ "type": "mini-quizz", "name": "Aquecimento Global", "description": "", "picture": "", "age": "6-12 years old", "date": "2019-05-01", "value": 10, "questions": [{ "id": 1, "question": "O Acordo de Paris, aprovado por 195 países em 2015, acorda em:", "answers": ["Aumentar a produção de renováveis em 30% face a 1990", "Manter o aumento da temperatura média mundial abaixo dos 2ºC em relação aos níveis pré-industriais", "Transitar para uma mobilidade 100% elétrica até 2030"], "correctAnswer": 1, "hint": "" }, { "id": 2, "question": "Qual destas atividades contribuiu mais para as alterações climáticas? (jovens, adultos)", "answers": ["Andar de carro", "Desflorestação", "Uso de combustíveis fósseis para a produção de energia"], "correctAnswer": 2, "hint": "" }, { "id": 3, "question": "Qual é o gás cuja emissão é a principal responsável pelo Aquecimento Global (aumento da temperatura média dos oceanos e da atmosfera da Terra)?", "answers": ["Metano (CH4)", "Ozono (O3)", "Dióxido de Carbono (CO2)"], "correctAnswer": 2, "hint": "" }] })
+use test
+db.dataobjects.deleteMany()
+db.dataobjects.deleteMany({})
+db.dataobjects.deleteOne()
+db.dataobjects.deleteOne({})
+db.dataobjects.find()
+db.dataobjects.find({})
+db.rates.deleteMany({})
+db.wallets.deleteMany({})
+use test
+db.wallets.find()
+db.wallets.count()
+db.wallets.find()
+ls
+use test
+db.createCollection('bonus')
+db.bonus.insert({ "icon": "http://tiphero.com/wp-content/uploads/2016/10/20-Minute-Chocolate-Croissants.jpg", "name": "Croaissant", "description": "bla bla", "cost": "0", "spotID": "1", "validity": "27/04/18" })
+db.bonus.insert({ "icon": "https://cdn1.newsplex.pt/fotos/2015/9/18/487054.jpg?type=Artigo", "name": "Café", "description": "bla bla bla", "cost": "0", "spotID": "0", "validity": "27/08/18" })
+db.bonus.find()
+use test
+db.getCollectionNames()
+use test
+db.getCollectionNames()
+db.createCollection('siotdevices')
+db.dataobjects.deleteMany()
+db.dataobjects.deleteMany({})
+db.rates.deleteMany({})
+db.wallets.deleteMany({})
+ls
+use test
+db.elearnings.deleteMany({})
+db.elearnings.insert({"type" : "power-quiz", "name" : "Mobilidade", "description" : "", "picture" : "", "age" : "6-12 years old", "date" : "2018-09-01", "value" : 85, "category" : "mobilidade", "questions" : [ { "id" : 1, "question" : "A etiqueta dos pneus tem indicação da eficiência no consumo de combustível.", "answers" : [ "Verdadeiro", "Falso" ], "correctAnswer" : 0, "hint" : "A etiqueta dos pneus tem indicação da eficiência no consumo de combustível, que permite comparar pneus e escolher opções menos consumidoras de combustível." }, { "id" : 2, "question" : "A forma como se conduz um carro faz variar o seu consumo.", "answers" : [ "Verdadeiro", "Falso" ], "correctAnswer" : 0, "hint" : "Por exemplo, se estiver sempre a conduzir a velocidades mais altas e depois ter que fazer grandes travagens gasta mais energia do que se fizer uma condução mais cuidada." }, { "id" : 3, "question" : "A indústria automóvel tem vindo a reduzir o consumo de gasolina/gasóleo dos automóveis.", "answers" : [ "Verdadeiro", "Falso" ], "correctAnswer" : 0, "hint" : "A indústria automóvel tem vindo a reduzir o consumo de gasolina/gasóleo dos automóveis, de forma a reduzir a poluição associada à utilização destas viaturas. " }, { "id" : 4, "question" : "A mobilidade elétrica é mais sustentável que a mobilidade a gasolina e gasóleo?", "answers" : [ "Sim, sempre.", "Sim, se a energia for não renovável.", "Não. Ambas são sustentáveis.", "Sim, se a energia for renovável." ], "correctAnswer" : 0, "hint" : "Sim, a mobilidade elétrica é sempre mais sustentável que os transportes a gasolina e gasóleo, pois, mesmo usando combustíveis fósseis na produção de eletricidade, os veículos elétricos são mais eficientes que os veículos os restantes." }, { "id" : 5, "question" : "A mobilidade sustentável deve ser um objetivo...", "answers" : [ "de todos, pessoas e empresas.", "das empresas de transporte de pessoas.", "das empresas de transporte de mercadorias.", "das pessoas nas suas deslocações diárias." ], "correctAnswer" : 0, "hint" : "A mobilidade sustentável deve ser um objetivo de todos, pessoas e empresas." }, { "id" : 6, "question" : "A Organização das Nações Unidas (ONU) elegeu a bicicleta como o transporte, ecologicamente, mais sustentável do planeta?", "answers" : [ "Sim", "Não" ], "correctAnswer" : 0, "hint" : "Sim, a ONU considera a bicicleta como o transporte, ecologicamente, mais sustentável do planeta." }, { "id" : 7, "question" : "A quantidade de ar que os pneus têm não é importante para o consumo do carro.", "answers" : [ "Verdadeiro", "Falso" ], "correctAnswer" : 0, "hint" : "A quantidade de ar que os pneus têm é importante para o consumo do carro, tanto que se deve ver com alguma frequência se os pneus têm a quantidade de ar correta (que varia de carro para carro)." } ] } )
+db.elearnings.insert({ "type" : "default", "name" : "Energia", "description" : "", "picture" : "", "age" : "6-12 years old", "date" : "2018-09-01", "value" : 100, "category" : "energia", "questions" : [ { "id" : 1, "question" : "Usar ventoinhas em vez de ar condicionado pode reduzir drasticamente a sua conta de eletricidade.", "answers" : [ "Verdadeiro", "Falso" ], "correctAnswer" : 0, "hint" : "Ventoinhas podem usar apenas 10% da energia usada pelo ar condicionado. Apesar das ventoinhas não reduzirem a temperatura ambiente do espaço, ajudam o seu corpo a arrefecer ao aumentar o fluxo de ar no espaço." }, { "id" : 2, "question" : "Frigoríficos e congeladores funcionam de modo mais eficiente quando estão vazios.", "answers" : [ "Verdadeiro", "Falso" ], "correctAnswer" : 1, "hint" : "Frigoríficos e congeladores funcionam de modo mais eficiente quando estão cheios. Contudo, encher demasiado também não é eficiente, por isso, garanta que mantém um pequeno espaço entre os itens para o ar poder circular. " }, { "id" : 3, "question" : "Qual é a temperatura ideal para o seu ar condicionado no verão?", "answers" : [ "18°C – 20°C", "21°C", "22°C", "23°C – 26°C" ], "correctAnswer" : 3, "hint" : "Muitos especialistas recomendam que fixe a temperatura do seu termostato entre 24°C – 27°C ou, pelo menos, acima de 23°C. É recomendado que fixe à temperatura mais alta a que se sinta confortavelmente fresco." }, { "id" : 4, "question" : "Qual é a temperatura ideal para o seu ar condicionado no inverno?", "answers" : [ "18°C – 21°C", "22°C", "23°C", "23°C – 26°C" ], "correctAnswer" : 0, "hint" : "É recomendável, que assim que a sua família se sentir confortável em casa com a temperatura que tem fixada, experimente baixar um grau a cada duas semanas até ficar dentro da temperatura recomendada." }, { "id" : 5, "question" : "Qual das seguintes medidas irá reduzir o seu consumo de eletricidade?", "answers" : [ "Só ligar as luzes que são necessárias.", "Trocar as suas lâmpadas por LED.", "Só usar a máquina de lavar louça quando estiver cheia.", "Todas as anteriores." ], "correctAnswer" : 3, "hint" : "" }, { "id" : 6, "question" : "Em média, qual é a percentagem que o uso de água quente representa no seu consumo de energia?", "answers" : [ "5%", "10%", "25%", "60%" ], "correctAnswer" : 2, "hint" : "A água quente representa cerca de 25% do consumo médio de energia da sua casa, sendo maioritariamente usada para banhos. Duches mais curtos e redução do número de banhos podem ajudar a reduzir a sua conta de eletricidade. " }, { "id" : 7, "question" : "O Miguel nunca desliga a sua televisão, deixando-a apenas em standby quando não está a usá-la. Isto afeta a sua conta de eletricidade?", "answers" : [ "Sim", "Não" ], "correctAnswer" : 0, "hint" : "A energia gasta nos equipamentos em standby, representa cerca de 10% do uso de eletricidade. Pode poupar energia ao ter um gesto tão simples como desligar a sua televisão no botão on/off da mesma em vez de deixar em standby." }, { "id" : 8, "question" : "A Patrícia está a pensar em instalar painéis solares no seu telhado para reduzir a sua fatura de energia. O que deve ter em consideração?", "answers" : [ "Se o telhado recebe suficiente luz solar.", "A área de painéis solares que precisa.", "O custo do sistema vs poupanças.", "Todas as anteriores." ], "correctAnswer" : 3, "hint" : "Instalar painéis solares pode ser uma excelente medida de redução de fatura de energia. Contudo, a instalação de um sistema solar é um investimento significativo e deve ser investigado" }, { "id" : 9, "question" : "Usar latas de alumínio recicladas para fazer novas latas usa quão menos energia do que fazer novas latas do zero?", "answers" : [ "12 %", "25 %", "79 %", "95 %" ], "correctAnswer" : 3, "hint" : "Reciclar latas de alumínio para fazer novas latas usa cerca de menos 95% de energia do que fazer novas latas através da bauxite (material usado para a construção das latas)." }, { "id" : 10, "question" : "A maneira como usa o seu ar condicio
+nado pode ter um impacto significativo na sua fatura de eletricidade. Quanta energia gasta
+use test
+db.elearnings.find()
+nado pode ter um impacto significativo na sua fatura de eletricidade. Quanta energia gasta
+db.elearnings.insert({"type" : "mini-quiz", "name" : "Energias Renováveis", "description" : "Energy quizz for children", "picture" : "", "age" : "6-12 years old", "date" : "2018-10-01", "category" : "energia", "value" : 15, "questions" : [ { "id" : 1, "question" : "Em 2016, qual a percentagem de energia distribuída em Portugal que teve origem em fontes renováveis?", "answers" : [ "13%", "4%", "24%" ], "correctAnswer" : 2, "hint" : "" }, { "id" : 2, "question" : "Acabe a seguinte frase: em apenas uma hora, a luz do sol que incide na terra produz energia suficiente para alimentar todo o planeta durante: ", "answers" : [ "1 ano", "6 meses", "20 horas", "1 hora" ], "correctAnswer" : 0, "hint" : "" }, { "id" : 3, "question" : "Qual das seguintes fontes de produção de energia não é uma fonte renovável?", "answers" : [ "Eólica", "Gás Natural", "Solar", "Geotérmica" ], "correctAnswer" : 1, "hint" : "" } ] } )
+db.elearnings.insert({ "type" : "mini-quiz", "name" : "Aquecimento Global", "description" : "", "picture" : "", "age" : "6-12 years old", "date" : "2019-05-01", "category" : "energia", "value" : 15, "questions" : [ { "id" : 1, "question" : "O Acordo de Paris, aprovado por 195 países em 2015, acorda em: ", "answers" : [ "Aumentar a produção de renováveis em 30% face a 1990", "Manter o aumento da temperatura média mundial abaixo dos 2ºC em relação aos níveis pré-industriais", "Transitar para uma mobilidade 100% elétrica até 2030" ], "correctAnswer" : 1, "hint" : "" }, { "id" : 2, "question" : "Qual destas atividades contribuiu mais para as alterações climáticas? (jovens, adultos)", "answers" : [ "Andar de carro", "Desflorestação", "Uso de combustíveis fósseis para a produção de energia" ], "correctAnswer" : 2, "hint" : "" }, { "id" : 3, "question" : "Qual é o gás cuja emissão é a principal responsável pelo Aquecimento Global (aumento da temperatura média dos oceanos e da atmosfera da Terra)?", "answers" : [ "Metano (CH4)", "Ozono (O3)", "Dióxido de Carbono (CO2)" ], "correctAnswer" : 2, "hint" : "" } ] })
+db.elearnings.insert({ "type" : "default", "name" : "Energia", "description" : "", "picture" : "", "age" : "6-12 years old", "date" : "2018-09-01", "value" : 100, "category" : "energia", "questions" : [ { "id" : 1, "question" : "Usar ventoinhas em vez de ar condicionado pode reduzir drasticamente a sua conta de eletricidade.", "answers" : [ "Verdadeiro", "Falso" ], "correctAnswer" : 0, "hint" : "Ventoinhas podem usar apenas 10% da energia usada pelo ar condicionado. Apesar das ventoinhas não reduzirem a temperatura ambiente do espaço, ajudam o seu corpo a arrefecer ao aumentar o fluxo de ar no espaço." }, { "id" : 2, "question" : "Frigoríficos e congeladores funcionam de modo mais eficiente quando estão vazios.", "answers" : [ "Verdadeiro", "Falso" ], "correctAnswer" : 1, "hint" : "Frigoríficos e congeladores funcionam de modo mais eficiente quando estão cheios. Contudo, encher demasiado também não é eficiente, por isso, garanta que mantém um pequeno espaço entre os itens para o ar poder circular. " }, { "id" : 3, "question" : "Qual é a temperatura ideal para o seu ar condicionado no verão?", "answers" : [ "18°C – 20°C", "21°C", "22°C", "23°C – 26°C" ], "correctAnswer" : 3, "hint" : "Muitos especialistas recomendam que fixe a temperatura do seu termostato entre 24°C – 27°C ou, pelo menos, acima de 23°C. É recomendado que fixe à temperatura mais alta a que se sinta confortavelmente fresco." }, { "id" : 4, "question" : "Qual é a temperatura ideal para o seu ar condicionado no inverno?", "answers" : [ "18°C – 21°C", "22°C", "23°C", "23°C – 26°C" ], "correctAnswer" : 0, "hint" : "É recomendável, que assim que a sua família se sentir confortável em casa com a temperatura que tem fixada, experimente baixar um grau a cada duas semanas até ficar dentro da temperatura recomendada." }, { "id" : 5, "question" : "Qual das seguintes medidas irá reduzir o seu consumo de eletricidade?", "answers" : [ "Só ligar as luzes que são necessárias.", "Trocar as suas lâmpadas por LED.", "Só usar a máquina de lavar louça quando estiver cheia.", "Todas as anteriores." ], "correctAnswer" : 3, "hint" : "" }, { "id" : 6, "question" : "Em média, qual é a percentagem que o uso de água quente representa no seu consumo de energia?", "answers" : [ "5%", "10%", "25%", "60%" ], "correctAnswer" : 2, "hint" : "A água quente representa cerca de 25% do consumo médio de energia da sua casa, sendo maioritariamente usada para banhos. Duches mais curtos e redução do número de banhos podem ajudar a reduzir a sua conta de eletricidade. " }, { "id" : 7, "question" : "O Miguel nunca desliga a sua televisão, deixando-a apenas em standby quando não está a usá-la. Isto afeta a sua conta de eletricidade?", "answers" : [ "Sim", "Não" ], "correctAnswer" : 0, "hint" : "A energia gasta nos equipamentos em standby, representa cerca de 10% do uso de eletricidade. Pode poupar energia ao ter um gesto tão simples como desligar a sua televisão no botão on/off da mesma em vez de deixar em standby." }, { "id" : 8, "question" : "A Patrícia está a pensar em instalar painéis solares no seu telhado para reduzir a sua fatura de energia. O que deve ter em consideração?", "answers" : [ "Se o telhado recebe suficiente luz solar.", "A área de painéis solares que precisa.", "O custo do sistema vs poupanças.", "Todas as anteriores." ], "correctAnswer" : 3, "hint" : "Instalar painéis solares pode ser uma excelente medida de redução de fatura de energia. Contudo, a instalação de um sistema solar é um investimento significativo e deve ser investigado" }, { "id" : 9, "question" : "Usar latas de alumínio recicladas para fazer novas latas usa quão menos energia do que fazer novas latas do zero?", "answers" : [ "12 %", "25 %", "79 %", "95 %" ], "correctAnswer" : 3, "hint" : "Reciclar latas de alumínio para fazer novas latas usa cerca de menos 95% de energia do que fazer novas latas através da bauxite (material usado para a construção das latas)." }, { "id" : 10, "question" : "A maneira como usa o seu ar condicio
+nado pode ter um impacto significativo na sua fatura de eletricidade. Quanta energia gasta
+db.elearnings.find()
+use test
+db.elearnings.insert({ "type": "default", "name": "Energia", "description": "", "picture": "", "age": "6-12 years old", "date": "2018-09-01", "value": 100, "category": "energia", "questions": [{ "id": 1, "question": "Usar ventoinhas em vez de ar condicionado pode reduzir drasticamente a sua conta de eletricidade.", "answers": ["Verdadeiro", "Falso"], "correctAnswer": 0, "hint": "Ventoinhas podem usar apenas 10% da energia usada pelo ar condicionado. Apesar das ventoinhas não reduzirem a temperatura ambiente do espaço, ajudam o seu corpo a arrefecer ao aumentar o fluxo de ar no espaço." }, { "id": 2, "question": "Frigoríficos e congeladores funcionam de modo mais eficiente quando estão vazios.", "answers": ["Verdadeiro", "Falso"], "correctAnswer": 1, "hint": "Frigoríficos e congeladores funcionam de modo mais eficiente quando estão cheios. Contudo, encher demasiado também não é eficiente, por isso, garanta que mantém um pequeno espaço entre os itens para o ar poder circular. " }, { "id": 3, "question": "Qual é a temperatura ideal para o seu ar condicionado no verão?", "answers": ["18°C – 20°C", "21°C", "22°C", "23°C – 26°C"], "correctAnswer": 3, "hint": "Muitos especialistas recomendam que fixe a temperatura do seu termostato entre 24°C – 27°C ou, pelo menos, acima de 23°C. É recomendado que fixe à temperatura mais alta a que se sinta confortavelmente fresco." }, { "id": 4, "question": "Qual é a temperatura ideal para o seu ar condicionado no inverno?", "answers": ["18°C – 21°C", "22°C", "23°C", "23°C – 26°C"], "correctAnswer": 0, "hint": "É recomendável, que assim que a sua família se sentir confortável em casa com a temperatura que tem fixada, experimente baixar um grau a cada duas semanas até ficar dentro da temperatura recomendada." }, { "id": 5, "question": "Qual das seguintes medidas irá reduzir o seu consumo de eletricidade?", "answers": ["Só ligar as luzes que são necessárias.", "Trocar as suas lâmpadas por LED.", "Só usar a máquina de lavar louça quando estiver cheia.", "Todas as anteriores."], "correctAnswer": 3, "hint": "" }, { "id": 6, "question": "Em média, qual é a percentagem que o uso de água quente representa no seu consumo de energia?", "answers": ["5%", "10%", "25%", "60%"], "correctAnswer": 2, "hint": "A água quente representa cerca de 25% do consumo médio de energia da sua casa, sendo maioritariamente usada para banhos. Duches mais curtos e redução do número de banhos podem ajudar a reduzir a sua conta de eletricidade. " }, { "id": 7, "question": "O Miguel nunca desliga a sua televisão, deixando-a apenas em standby quando não está a usá-la. Isto afeta a sua conta de eletricidade?", "answers": ["Sim", "Não"], "correctAnswer": 0, "hint": "A energia gasta nos equipamentos em standby, representa cerca de 10% do uso de eletricidade. Pode poupar energia ao ter um gesto tão simples como desligar a sua televisão no botão on/off da mesma em vez de deixar em standby." }, { "id": 8, "question": "A Patrícia está a pensar em instalar painéis solares no seu telhado para reduzir a sua fatura de energia. O que deve ter em consideração?", "answers": ["Se o telhado recebe suficiente luz solar.", "A área de painéis solares que precisa.", "O custo do sistema vs poupanças.", "Todas as anteriores."], "correctAnswer": 3, "hint": "Instalar painéis solares pode ser uma excelente medida de redução de fatura de energia. Contudo, a instalação de um sistema solar é um investimento significativo e deve ser investigado" }, { "id": 9, "question": "Usar latas de alumínio recicladas para fazer novas latas usa quão menos energia do que fazer novas latas do zero?", "answers": ["12 %", "25 %", "79 %", "95 %"], "correctAnswer": 3, "hint": "Reciclar latas de alumínio para fazer novas latas usa cerca de menos 95% de energia do que fazer novas latas através da bauxite (material usado para a construção das latas)." }, { "id": 10, "question": "A maneira como usa o seu ar condicionado pode ter um impacto significativo na sua fatura de eletricidade. Quant
+a energia gasta a mais por cada grau adicional na temperatura?", "answers": ["Menos de 4 %", "4 a 7 %", "7 a 10 %", "12 a 15 %"], "correctAnswer": 2, "hint": "Regule os termóstatos da climatização para temperaturas em que se sinta confortável, habitualmente entre os 18 ºC e os 21 ºC no Inverno, e os 23 ºC a 26 ºC no Verão." }] })
+use test
+db.getCollectionNames({})
+db.dataobjects.deleteMany({})
+db.rate.deleteMany({})
+db.rates.deleteMany({})
+db.siotdevices.deleteMany({})
+db.wallets.deleteMany({})
+use test
+use test
+db.wallets.find({})
+db.wallets.remove({})
+db.wallets.find({})
+db.dataobjects.find({})
+db.dataobjects.remove({})
+db.rates.remove({})
+db.bonus.find({})
+db.wallets.find({})
+use test
+db.shops.find({})
+db.siotdevices.find({})
+db.wallets.find({})
+db.siotdevices.remove({})
+db.wallets.find({})
+db.siotdevices.find({})
+db.wallets.find({})
+use test
+db.wallets.find(7})
+db.wallets.find(7{})
+db.wallets.find({})
+db.dataobjects.find({})
+db.siotdevices.find({})
+use test
+db.shops.find({})
+use test
+use test
+db.bonus.insert({ "id": "1", "name": "Bónus", "description": "Bónus", "cost": 10, "spotID": "7", "icon": "https://pbs.twimg.com/profile_images/636414451252621312/pZ_tLEw-_400x400.jpg", "start": "2018/08/10", "expires": "3000/10/01", "constraints": { "period": "day", "times": 2 }, "successfulTransactionIcon": "https://i.pinimg.com/originals/5f/cb/99/5fcb995c29b87b8bbe95ea08e5b574fc.jpg", "failedTransactionIcon": "https://i.ebayimg.com/images/g/fFsAAOSwroZas79w/s-l300.jpg" })
+use test
+db.bonus.find()
+db.bonus.deleteMany({})
+db.bonus.insert({ "id": "1", "name": "Bónus", "description": "Bónus", "cost": 10, "spotID": "7", "icon": "https://pbs.twimg.com/profile_images/636414451252621312/pZ_tLEw-_400x400.jpg", "start": "2018/08/10", "expires": "3000/10/01", "constraints": { "period": "day", "times": 2 }, "successfulTransactionIcon": "https://i.pinimg.com/originals/5f/cb/99/5fcb995c29b87b8bbe95ea08e5b574fc.jpg", "failedTransactionIcon": "https://i.ebayimg.com/images/g/fFsAAOSwroZas79w/s-l300.jpg" })
+db.bonus.insert({ "id": "2", "name": "Bónus", "description": "Bónus", "cost": 10, "spotID": "8", "icon": "https://pbs.twimg.com/profile_images/636414451252621312/pZ_tLEw-_400x400.jpg", "start": "2018/08/10", "expires": "3000/10/01", "constraints": { "period": "day", "times": 2 }, "successfulTransactionIcon": "https://i.pinimg.com/originals/5f/cb/99/5fcb995c29b87b8bbe95ea08e5b574fc.jpg", "failedTransactionIcon": "https://i.ebayimg.com/images/g/fFsAAOSwroZas79w/s-l300.jpg" })
+db.bonus.insert({ "id": "3", "name": "Bónus", "description": "Bónus", "cost": 10, "spotID": "9", "icon": "https://pbs.twimg.com/profile_images/636414451252621312/pZ_tLEw-_400x400.jpg", "start": "2018/08/10", "expires": "3000/10/01", "constraints": { "period": "day", "times": 2 }, "successfulTransactionIcon": "https://i.pinimg.com/originals/5f/cb/99/5fcb995c29b87b8bbe95ea08e5b574fc.jpg", "failedTransactionIcon": "https://i.ebayimg.com/images/g/fFsAAOSwroZas79w/s-l300.jpg" })
+db.bonus.find()
+db.shops.find()
+db.bonus.find()
+use test
+db.wallets.find({"address":""})
+db.wallets.find()
+use tes
+use test
+db.wallets.find()
+use test
+db.shops.find()
+db.wallets.find({"identity":{"userProfile":{"guid":"user-guid://c3db03d3d7608a6484610536b0904382d7f683243d569b0026dc7120934dc199" }}})
