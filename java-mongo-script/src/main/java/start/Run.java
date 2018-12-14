@@ -1,12 +1,21 @@
-package start;
+	package start;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import com.hazelcast.map.impl.query.Result;
+
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonArray;
@@ -14,6 +23,8 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.ext.mongo.MongoClient;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
+import util.DateUtilsHelper;
+
 
 public class Run extends AbstractVerticle {
 
@@ -24,6 +35,12 @@ public class Run extends AbstractVerticle {
 	private CountDownLatch findWallets;
 	private JsonArray walletsFound;
 	private HashMap<String, Integer> report = new HashMap<>();
+	
+	private final JsonArray accountsDefault = new JsonArray().add(new Account("elearning", "quizzes").toJsonObject())
+			.add(new Account("walking", "km").toJsonObject()).add(new Account("biking", "km").toJsonObject())
+			.add(new Account("checkin", "checkin").toJsonObject())
+			.add(new Account("energy-saving", "%").toJsonObject())
+			.add(new Account("created", "points").toJsonObject());
 
 	public static void main(String[] args) {
 
@@ -63,114 +80,388 @@ public class Run extends AbstractVerticle {
 		}
 
 
-		/*if (mongoHosts != null && mongoPorts != null) {
-			System.out.println("Setting up Mongo to:" + mongoHosts);
-			
-			JsonArray hosts = new JsonArray();
-			
-			String [] hostsEnv = mongoHosts.split(",");
-			String [] portsEnv = mongoPorts.split(",");
-			
-			for (int i = 0; i < hostsEnv.length ; i++) {
-				hosts.add(new JsonObject().put("host", hostsEnv[i]).put("port", Integer.parseInt(portsEnv[i])));
-				System.out.println("added to config:" + hostsEnv[i] + ":" + portsEnv[i]);
-			}
-			
-			//final JsonObject mongoconfig = new JsonObject().put("replicaSet", "testeMongo").put("db_name", "test").put("hosts", hosts);
-			
-			System.out.println("Setting up Mongo with cfg on START:" +  mongoconfig.toString());
-			mongoClient = MongoClient.createShared(vertx, mongoconfig);
-				
-			
-			JsonArray wallets = findWallets();
-			
-				
-			for (int i = 0; i< wallets.size(); i++) {
-				
-				JsonObject wallet = wallets.getJsonObject(i);
-				
-				if (wallet.containsKey("profile")) {
-					
-					JsonObject walletProfile = wallet.getJsonObject("profile");
-					
-					if(walletProfile.containsKey("code")) {
-						
-						String code = walletProfile.getString("code");
-						if(report.containsKey(code)) {
-							int value = report.get(code);
-							report.put(code, value+1);
-						} else {
-							report.put(code, 1);
-						}
-						
-					}
-				}		
-			}
-			
-			BufferedWriter writer = new BufferedWriter(new FileWriter("resultFile"));
-			BufferedWriter writerCSV = new BufferedWriter(new FileWriter("report.csv"));
-			System.out.println("***Report Result***");
-			writer.write("*******************************\n");
-			writer.write("*        Report Result        *\n");
-			writer.write("*******************************\n");
-			writerCSV.write("Code,Value\n");
-			for (String code: report.keySet()){
-				String toWrite = code + ": " + report.get(code) + "\n";
-	            System.out.println(toWrite);
-	            writerCSV.write(code + "," + report.get(code) + "\n");
-	            writer.write(String.format("* %-20s | %-5s*\n", code, report.get(code)));
-	            //writer.write(toWrite);
-			} 
-			writer.write("*******************************\n");
-			writer.close();
-			writerCSV.close();
-			vertx.close();
 
-			
-		}*/
 		
-		final String uri = "mongodb://" + "localhost" + ":27017";
-		final JsonObject mongoconfig   = new JsonObject().put("connection_string", uri).put("db_name", "test");
+		
+		
+		JsonArray hosts = new JsonArray();
+		hosts.add(new JsonObject().put("host", "localhost").put("port", 27017));
+		
+		//final String uri = "mongodb://" + "localhost" + ":27017";
+		final JsonObject mongoconfig = new JsonObject().put("replicaSet", "testeMongo").put("db_name", "test").put("hosts",
+				hosts);
 
+		mongoClient = MongoClient.createShared(vertx, mongoconfig);
 		
 		JsonArray wallets = findWallets().getJsonObject(0).getJsonArray("wallets");
 		
 		
+		getWalletsInfo(wallets);
 		
+		//fillTransactionsCollection();
+		//updatePrivAccounts();
+		//updatePubAccounts();
 		
+			
+	}
+		
+	private void getWalletsInfo(JsonArray wallets) {
 		for (int i = 0; i< wallets.size(); i++) {
 			
 			JsonObject wallet = wallets.getJsonObject(i);
 			
+			
+			Future<JsonArray> transactionsFuture = getPubWalletTransactions(wallet.getString("address"));
+			
+			transactionsFuture.setHandler(transactionsResult -> {
+				if (transactionsResult.succeeded()) { 
+					
+					System.out.println("-----------------------------------------");
+					System.out.println("-----------------------------------------");
+					JsonArray transactions = transactionsResult.result();	
+					System.out.println("address:" + wallet.getString("address"));
+					System.out.println("transactions:" + transactions.size());
+					int created = 0;
+					int checkin = 0;
+					int elearning = 0;
+					int useractivity = 0;
+					int totalEl = 0;
+						
+					for (int j = 0; j < transactions.size(); j++) {
+						
+						JsonObject transaction = transactions.getJsonObject(j);
+						String source = transaction.getString("source");
+						
+						if (source.equals("checkin")) {
+							checkin++;
+						} else if (source.equals("user-activity")) {
+							useractivity++;
+						} else if (source.equals("elearning")) {
+							elearning++;
+							totalEl = totalEl + transaction.getInteger("value");
+						} else if (source.equals("created")) {
+							created++;
+						}
+					}
+					System.out.println("checkin:" + checkin);
+					System.out.println("user-activity:" + useractivity);
+					System.out.println("elearning:" + elearning);
+					System.out.println("created:" + created);
+					System.out.println("totalele:" + totalEl);
+
+				}
+			});
+
+			/*
+			System.out.println("-----------------------------------------");
+			System.out.println("-----------------------------------------");
+			JsonArray transactions = wallet.getJsonArray("transactions");
 			System.out.println("address:" + wallet.getString("address"));
-			System.out.println("transactions:" + wallet.getJsonArray("transactions").size());
+			System.out.println("transactions:" + transactions.size());
+			int created = 0;
+			int checkin = 0; 
+			int elearning = 0;
+			int totalEl = 0;
+			int useractivity = 0;
+				
+			for (int j = 0; j < transactions.size(); j++) {
+				
+				JsonObject transaction = transactions.getJsonObject(j);
+				String source = transaction.getString("source");
+				
+				if (source.equals("checkin")) {
+					checkin++;
+				} else if (source.equals("user-activity")) {
+					useractivity++;
+				} else if (source.equals("elearning")) {
+					elearning++;
+					totalEl = totalEl + transaction.getInteger("value");
+				} else if (source.equals("created")) {
+					created++;
+				}
+				
+			}
+			System.out.println("checkin:" + checkin);
+			System.out.println("user-activity:" + useractivity);
+			System.out.println("elearning:" + elearning);
+			System.out.println("created:" + created);
+			System.out.println("totalele:" + totalEl);
+			
+			*/
 		}
+	}
+	
+	
+	private void fillTransactionsCollection() {	
+		Future<JsonArray> walletsFuture = getWallets();
+		walletsFuture.setHandler(asyncResult -> {
+			if (asyncResult.succeeded()) {
+				JsonArray allWallets = asyncResult.result();
+				String causeWalletAddress = "wallet2bGranted";
+				for (int x=0; x < allWallets.size(); x++) {	
+					JsonObject wallet = allWallets.getJsonObject(x);
+					String address = wallet.getString("address");
+							
+					// in case of private wallet
+					if (!address.equals("public-wallets")) {
+						String pubCause = wallet.getString(causeWalletAddress);
+						String walletID = (String) wallet.getValue("_id");
+
+						JsonArray transactions = wallet.getJsonArray("transactions");
+								
+						for (int y = 0; y < transactions.size(); y++) {
+							
+							JsonObject currentTransaction = transactions.getJsonObject(y);
+							currentTransaction.put(causeWalletAddress, pubCause);
+							currentTransaction.remove("recipient");
+							currentTransaction.put("recipient", walletID);
+							
+							mongoClient.insert("transactions", currentTransaction, r -> {});					
+						}							
+					} 
+				}
+			}
+		});
+	}
+
+	private void updatePrivAccounts() {
+		Future<JsonArray> walletsFuture = getWallets();
+		walletsFuture.setHandler(asyncResult -> {
+
+			if (asyncResult.succeeded()) {
+				JsonArray allWallets = asyncResult.result();
+
+
+				String causeWalletAddress = "wallet2bGranted";
+				for (int x=0; x < allWallets.size(); x++) {	
+					JsonObject wallet = allWallets.getJsonObject(x);
+					String address = wallet.getString("address");
+							
+					// in case of private wallet
+					if (!address.equals("public-wallets")) {
+						String pubCause = wallet.getString(causeWalletAddress);
+						String walletID = (String) wallet.getValue("_id");
+						
+
+						System.out.println("walletid:" + walletID);
+						Future<JsonArray> transactionsFuture = getWalletTransactions(walletID);
+						transactionsFuture.setHandler(transactionsResult -> {
+							System.out.println("result ("+walletID+"):" + transactionsResult.result().size());
+							if (transactionsResult.succeeded()) { 
+								
+								JsonArray transactions = transactionsResult.result();
+								
+
+								if (wallet.containsKey("accounts")) {
+									wallet.remove("accounts");
+								}
+									
+								
+								JsonArray accounts = buildAccountWallet(wallet, transactions, false);
+								System.out.println("accounts"+ accounts.toString());
+								wallet.put("accounts", accounts);
+								mongoClient.findOneAndReplace("wallets", new JsonObject().put("_id", walletID), wallet, r -> {});				
+						
+							}
+						});
+						
+						
+
+		
+					} else { //publicwallet
+						
+						JsonArray pubWallets = wallet.getJsonArray("wallets");
+						for (int z = 0 ; z<pubWallets.size() ; z++) {
+							JsonObject pubWallet = pubWallets.getJsonObject(z);
+							
+							
+						}
+						
+					}
+				}
+			}
+		});
+	}
+	
+	private void updatePubAccounts() {
+		Future<JsonArray> pubWalletsFuture = getPubWallets();
+		pubWalletsFuture.setHandler(asyncResult -> {
+
+			if (asyncResult.succeeded()) {
+				JsonObject walletDocument = asyncResult.result().getJsonObject(0);
+				String walletID = (String) walletDocument.getValue("_id");
+				
+				JsonArray pubWallets = walletDocument.getJsonArray("wallets");
+
+				for (int x=0; x < pubWallets.size(); x++) {	
+					JsonObject wallet = pubWallets.getJsonObject(x);
+					
+					String address = wallet.getString("address");				
+					Future<JsonArray> transactionsFuture = getPubWalletTransactions(address);
+					
+					transactionsFuture.setHandler(transactionsResult -> {
+						if (transactionsResult.succeeded()) { 
+							
+							JsonArray transactions = transactionsResult.result();	
+							if (wallet.containsKey("accounts")) {
+								wallet.remove("accounts");
+							}
+							JsonArray accounts = buildAccountWallet(wallet, transactions, true);
+							System.out.println("accounts"+ accounts.toString());
+							wallet.put("accounts", accounts);
+											
+							mongoClient.findOneAndReplace("wallets", new JsonObject().put("_id", walletID), walletDocument, r -> {});
+						}
+					});
+				}	
+			}
+		});
+	}
+	
+
+	private JsonArray buildAccountWallet(JsonObject wallet, JsonArray transactions, boolean isPubWallet) {
+		// default value
+
+		// for each activity
+		// TODO - get from transactions collection
+
+		wallet.put("accounts", accountsDefault.copy());
+		JsonArray accounts = wallet.getJsonArray("accounts");
+
+		List<String> activities = new ArrayList<>();
+		activities.add("walking");
+		activities.add("biking");
+		activities.add("elearning");
+		activities.add("checkin");
+		activities.add("energy-saving");
+		if(isPubWallet) {
+			activities.add("created");
+		}
+		for (String source : activities) {
+			// get transactions of that source (watch out for user-activity!)
+			List<Object> transactionsForSource = getTransactionsForSource(transactions, source, false);
+			// get account for source
+			JsonArray accountsDefCopy = accountsDefault.copy();
+			//System.out.println("[WalletManager] buildAccounts copy: " + accountsDefCopy);
+			System.out.println("source" + source);
+			List<Object> res = accountsDefCopy.stream()
+					.filter(account -> ((JsonObject) account).getString("name").equals(source))
+					.collect(Collectors.toList());
+			JsonObject accountJson = (JsonObject) res.get(0);
+			Account account = Account.toAccount(accountJson);
+			account.totalBalance = 0;
+			// sum all transactions value
+			account.totalBalance = sumTransactionsField(transactionsForSource, "value");
+			if (!source.equals("walking") && !source.equals("biking")) {
+				account.totalData = transactionsForSource.size();
+			} else {
+				account.totalData = sumTransactionsField(transactionsForSource, "distance");
+			}
+
+			JsonArray lastTransactions = (account.lastPeriod.equals("month"))
+					? lastMonthTransactions(transactionsForSource)
+					: lastWeekTransactions(transactionsForSource);
+					
+			System.out.println("walletid(" + wallet.getString("address") + " - LASTSIZE" + lastTransactions.size());
+			account.lastTransactions = getTransactionIds(lastTransactions);
+			account.lastBalance = sumTransactionsField(lastTransactions.getList(), "value");
+			if (!source.equals("walking") && !source.equals("biking")) {
+				account.lastData = lastTransactions.size();
+			} else {
+				account.lastData = sumTransactionsField(lastTransactions.getList(), "distance");
+			}
+			accountJson = account.toJsonObject();
+			for (Object entry : accounts) {
+				JsonObject js = (JsonObject) entry;
+				if (js.getString("name").equals(source)) {
+					accounts.remove(js);
+					accounts.add(accountJson);
+					break;
+				}
+			}
+
+		}
+
+		//System.out.println("[WalletManager] buildAccounts result:" + accounts);
+		return accounts;
 		
 	}
 	
-	private JsonArray findWalletsByCode(String code) {
-		System.out.println("find wallets with code:" + code);
-		walletsFound = null;
-		findWalletByCode = new CountDownLatch(1);
-
-		new Thread(() -> {
-			mongoClient.find("wallets", new JsonObject().put("profile.code", code), res -> {
-				if (res.result().size() != 0) {
-					walletsFound = new JsonArray(res.result().toString());
-				}
-				findWalletByCode.countDown();
-			});
-
-		}).start();
-
-		try {
-			findWalletByCode.await(5L, TimeUnit.SECONDS);
-			return walletsFound;
-		} catch (InterruptedException e) {
-			System.out.println(e);
+	private JsonArray getTransactionIds(JsonArray lastTransactions) {
+		JsonArray ids = new JsonArray();
+		for (int q = 0; q < lastTransactions.size(); q++) {
+			JsonObject transaction = lastTransactions.getJsonObject(q);
+			String currentID = (String) transaction.getValue("_id");
+			ids.add(currentID);
+			if(q==0) {
+				System.out.println(transaction.getString("recipient"));
+			}
+			
 		}
-		return walletsFound;
+		return ids;
 	}
+
+
+	private List<Object> getTransactionsForSource(JsonArray transactions, String source, boolean fromLast) {
+		if (fromLast) {
+			int num = 100;
+			JsonArray trAux = new JsonArray();
+			for (int i = transactions.size() - 1; i > transactions.size() - 1 - num && i >= 0; i--) {
+				trAux.add(transactions.getJsonObject(i));
+			}
+			transactions = trAux;
+		}
+		if (source.equals("walking") || source.equals("biking")) {
+			String newSource = "user_" + source + "_context";
+			return transactions.stream()
+					.filter(transaction -> isUserActivityTransaction((JsonObject) transaction, newSource))
+					.collect(Collectors.toList());
+		} else {
+			return transactions.stream()
+					.filter(transaction -> ((JsonObject) transaction).getString("source").equals(source))
+					.collect(Collectors.toList());
+		}
+	}
+	
+	private boolean isUserActivityTransaction(JsonObject transaction, String source) {
+		if (!transaction.getString("source").equals("user-activity")) {
+			return false;
+		} else
+			return transaction.getJsonObject("data").getString("activity").equals(source);
+	}
+	
+	private int sumTransactionsField(List<Object> transactions, String field) {
+		int sum = 0;
+		for (Object transaction : transactions) {
+			if (field.equals("distance")) {
+				sum += ((JsonObject) transaction).getJsonObject("data").getInteger("distance");
+			} else
+				sum += ((JsonObject) transaction).getInteger(field);
+		}
+		return sum;
+	}
+	
+	private JsonArray lastMonthTransactions(List<Object> transactions) {
+		JsonArray lastMonth = new JsonArray();
+		for (Object object : transactions) {
+			JsonObject transaction = (JsonObject) object;
+			if (DateUtilsHelper.isDateInCurrentMonth(DateUtilsHelper.stringToDate(transaction.getString("date")))) {
+				lastMonth.add(transaction);
+			}
+		}
+		return lastMonth;
+	}
+	
+	private JsonArray lastWeekTransactions(List<Object> transactions) {
+		JsonArray lastWeek = new JsonArray();
+		for (Object object : transactions) {
+			JsonObject transaction = (JsonObject) object;
+			if (DateUtilsHelper.isDateInCurrentWeek(DateUtilsHelper.stringToDate(transaction.getString("date")))) {
+				lastWeek.add(transaction);
+			}
+		}
+		return lastWeek;
+	}	
 	
 	private JsonArray findWallets() {
 		walletsFound = null;
@@ -192,5 +483,59 @@ public class Run extends AbstractVerticle {
 			System.out.println(e);
 		}
 		return walletsFound;
+	}
+	
+	Future<JsonArray> getPubWallets() {
+		Future<JsonArray> pubWallets = Future.future();
+		mongoClient.find("wallets", new JsonObject().put("address", "public-wallets"), res -> {
+			if (res.result().size() != 0) {
+				pubWallets.complete(new JsonArray(res.result().toString()));
+			}
+			
+		});
+		return pubWallets;
+	}
+	
+	
+	Future<JsonArray> getWallets() {
+		Future<JsonArray> allWallets = Future.future();
+		mongoClient.find("wallets", new JsonObject(), res -> {
+			if (res.result().size() != 0) {
+				allWallets.complete(new JsonArray(res.result().toString()));
+			}		
+		});
+		return allWallets;
+	}
+	
+	Future<JsonArray> getWalletTransactions(String walletID) {
+
+		Future<JsonArray> allTransactions = Future.future();
+
+		mongoClient.find("transactions", new JsonObject().put("recipient", walletID), res -> {
+
+			if (res.result().size() != 0) {
+				allTransactions.complete(new JsonArray(res.result().toString()));
+			}
+			
+		});
+
+		return allTransactions;
+
+	}
+	
+	Future<JsonArray> getPubWalletTransactions(String address) {
+
+		Future<JsonArray> allTransactions = Future.future();
+
+		mongoClient.find("transactions", new JsonObject().put("wallet2bGranted", address), res -> {
+
+			if (res.result().size() != 0) {
+				allTransactions.complete(new JsonArray(res.result().toString()));
+			}
+			
+		});
+
+		return allTransactions;
+
 	}
 }
