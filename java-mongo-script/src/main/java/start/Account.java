@@ -57,8 +57,8 @@ public class Account {
 		toJson.put("lastData", lastData);
 		toJson.put("dataUnit", dataUnit);
 		toJson.put("lastPeriod", lastPeriod);
-		toJson.put("description ", description);
-		toJson.put("lastTransactions ", lastTransactions);
+		toJson.put("description", description);
+		toJson.put("lastTransactions", lastTransactions);
 		return toJson;
 	}
 
