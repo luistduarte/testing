@@ -96,11 +96,12 @@ public class Run extends AbstractVerticle {
 		JsonArray wallets = findWallets().getJsonObject(0).getJsonArray("wallets");
 		
 		
-		getWalletsInfo(wallets);
+		//getWalletsInfo(wallets);
 		
 		//fillTransactionsCollection();
+		//fillTransactionsCollectionByPub();
 		//updatePrivAccounts();
-		//updatePubAccounts();
+		updatePubAccounts();
 		
 			
 	}
@@ -223,16 +224,15 @@ public class Run extends AbstractVerticle {
 			}
 		});
 	}
-
-	private void updatePrivAccounts() {
+	
+	private void countTransactionsCollectionByPub() {	
 		Future<JsonArray> walletsFuture = getWallets();
 		walletsFuture.setHandler(asyncResult -> {
-
 			if (asyncResult.succeeded()) {
 				JsonArray allWallets = asyncResult.result();
-
-
 				String causeWalletAddress = "wallet2bGranted";
+				int contPriv = 0;
+				int contPub = 0;
 				for (int x=0; x < allWallets.size(); x++) {	
 					JsonObject wallet = allWallets.getJsonObject(x);
 					String address = wallet.getString("address");
@@ -241,9 +241,44 @@ public class Run extends AbstractVerticle {
 					if (!address.equals("public-wallets")) {
 						String pubCause = wallet.getString(causeWalletAddress);
 						String walletID = (String) wallet.getValue("_id");
-						
 
+						JsonArray transactions = wallet.getJsonArray("transactions");
+						contPriv += transactions.size();		
+													
+					} else {
+						JsonArray pubWallets = wallet.getJsonArray("wallets");
+						
+						for (int z = 0; z < pubWallets.size(); z++) {
+							JsonObject pubwallet = pubWallets.getJsonObject(z);
+							String pubCause = pubwallet.getString("address");
+							int size = pubwallet.getJsonArray("transactions").size();
+							contPub += size;
+						}
+						
+					} 
+				}
+				System.out.println("transactions pub" + contPub);
+				System.out.println("transactions priv" + contPriv);
+			}
+		});
+	}
+
+	private void updatePrivAccounts() {
+		Future<JsonArray> walletsFuture = getWallets();
+		walletsFuture.setHandler(asyncResult -> {
+
+			if (asyncResult.succeeded()) {
+				JsonArray allWallets = asyncResult.result();
+
+				for (int x=0; x < allWallets.size(); x++) {	
+					JsonObject wallet = allWallets.getJsonObject(x);
+					String address = wallet.getString("address");
+							
+					// in case of private wallet
+					if (!address.equals("public-wallets")) {
+						String walletID = (String) wallet.getValue("_id");
 						System.out.println("walletid:" + walletID);
+						
 						Future<JsonArray> transactionsFuture = getWalletTransactions(walletID);
 						transactionsFuture.setHandler(transactionsResult -> {
 							System.out.println("result ("+walletID+"):" + transactionsResult.result().size());
@@ -251,32 +286,16 @@ public class Run extends AbstractVerticle {
 								
 								JsonArray transactions = transactionsResult.result();
 								
-
 								if (wallet.containsKey("accounts")) {
 									wallet.remove("accounts");
 								}
-									
 								
 								JsonArray accounts = buildAccountWallet(wallet, transactions, false);
 								System.out.println("accounts"+ accounts.toString());
 								wallet.put("accounts", accounts);
-								mongoClient.findOneAndReplace("wallets", new JsonObject().put("_id", walletID), wallet, r -> {});				
-						
+								mongoClient.findOneAndReplace("wallets", new JsonObject().put("_id", walletID), wallet, r -> {});								
 							}
 						});
-						
-						
-
-		
-					} else { //publicwallet
-						
-						JsonArray pubWallets = wallet.getJsonArray("wallets");
-						for (int z = 0 ; z<pubWallets.size() ; z++) {
-							JsonObject pubWallet = pubWallets.getJsonObject(z);
-							
-							
-						}
-						
 					}
 				}
 			}
