@@ -101,7 +101,7 @@ public class Run extends AbstractVerticle {
 		//fillTransactionsCollection();
 		//fillTransactionsCollectionByPub();
 		//updatePrivAccounts();
-		updatePubAccounts();
+		//updatePubAccounts();
 		
 			
 	}
@@ -286,10 +286,7 @@ public class Run extends AbstractVerticle {
 								
 								JsonArray transactions = transactionsResult.result();
 								
-								if (wallet.containsKey("accounts")) {
-									wallet.remove("accounts");
-								}
-								
+														
 								JsonArray accounts = buildAccountWallet(wallet, transactions, false);
 								System.out.println("accounts"+ accounts.toString());
 								wallet.put("accounts", accounts);
@@ -313,6 +310,7 @@ public class Run extends AbstractVerticle {
 				JsonArray pubWallets = walletDocument.getJsonArray("wallets");
 
 				for (int x=0; x < pubWallets.size(); x++) {	
+					
 					JsonObject wallet = pubWallets.getJsonObject(x);
 					
 					String address = wallet.getString("address");				
@@ -320,11 +318,9 @@ public class Run extends AbstractVerticle {
 					
 					transactionsFuture.setHandler(transactionsResult -> {
 						if (transactionsResult.succeeded()) { 
-							
+							System.out.println("res");
 							JsonArray transactions = transactionsResult.result();	
-							if (wallet.containsKey("accounts")) {
-								wallet.remove("accounts");
-							}
+
 							JsonArray accounts = buildAccountWallet(wallet, transactions, true);
 							System.out.println("accounts"+ accounts.toString());
 							wallet.put("accounts", accounts);
@@ -343,7 +339,23 @@ public class Run extends AbstractVerticle {
 
 		// for each activity
 		// TODO - get from transactions collection
+		JsonObject oldAccountsData = new JsonObject();
+		if (wallet.containsKey("accounts")) {
+			for (Object entry : wallet.getJsonArray("accounts")) {
+				JsonObject account = (JsonObject) entry;
+				String source = account.getString("name");
+				
+				JsonObject data = new JsonObject().put("totalBalance", account.getInteger("totalBalance"))
+												.put("totalData", account.getInteger("totalData"));
+				oldAccountsData.put(source, data);
+			}
+		}
 
+		
+		if (wallet.containsKey("accounts")) {
+			wallet.remove("accounts");
+		}
+		
 		wallet.put("accounts", accountsDefault.copy());
 		JsonArray accounts = wallet.getJsonArray("accounts");
 
@@ -390,11 +402,28 @@ public class Run extends AbstractVerticle {
 				account.lastData = sumTransactionsField(lastTransactions.getList(), "distance");
 			}
 			accountJson = account.toJsonObject();
+			
 			for (Object entry : accounts) {
 				JsonObject js = (JsonObject) entry;
 				if (js.getString("name").equals(source)) {
+					int totalBalance;
+					int totalData;
+					if (oldAccountsData.containsKey(source)) {
+						totalBalance = oldAccountsData.getJsonObject(source).getInteger("totalBalance");
+						totalData = oldAccountsData.getJsonObject(source).getInteger("totalData");
+						accountJson.remove("totalBalance");
+						accountJson.remove("totalData");
+						accountJson.put("totalBalance", totalBalance);
+						accountJson.put("totalData", totalData);
+						System.out.println("old bal " + totalBalance + "\nold Data" + totalData + "\non on source" + source);
+					} else {
+						System.out.println("dont have old bal");
+					}
+					
+					
 					accounts.remove(js);
 					accounts.add(accountJson);
+					
 					break;
 				}
 			}
