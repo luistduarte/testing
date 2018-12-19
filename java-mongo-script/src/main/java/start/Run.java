@@ -96,7 +96,7 @@ public class Run extends AbstractVerticle {
 		JsonArray wallets = findWallets().getJsonObject(0).getJsonArray("wallets");
 		
 		
-		//getWalletsInfo(wallets);
+		getWalletsInfo(wallets);
 		
 		//fillTransactionsCollection();
 		//fillTransactionsCollectionByPub();
@@ -126,6 +126,8 @@ public class Run extends AbstractVerticle {
 					int checkin = 0;
 					int elearning = 0;
 					int useractivity = 0;
+					int walk = 0;
+					int bike = 0;
 					int totalEl = 0;
 						
 					for (int j = 0; j < transactions.size(); j++) {
@@ -137,6 +139,13 @@ public class Run extends AbstractVerticle {
 							checkin++;
 						} else if (source.equals("user-activity")) {
 							useractivity++;
+							JsonObject data = transaction.getJsonObject("data");
+							if (data.getString("activity").equals("user_walking_context")) {
+								walk++;
+							} else {
+								bike++;
+							}
+									
 						} else if (source.equals("elearning")) {
 							elearning++;
 							totalEl = totalEl + transaction.getInteger("value");
@@ -146,6 +155,8 @@ public class Run extends AbstractVerticle {
 					}
 					System.out.println("checkin:" + checkin);
 					System.out.println("user-activity:" + useractivity);
+					System.out.println("walking:" + walk);
+					System.out.println("biking:" + bike);
 					System.out.println("elearning:" + elearning);
 					System.out.println("created:" + created);
 					System.out.println("totalele:" + totalEl);
