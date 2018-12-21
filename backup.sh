@@ -1,4 +1,5 @@
 #!/bin/bash
+cd /root/testing
 DAY=$(date +%d)
 MONTH=$(date +%m)
 YEAR=$(date +%y)
@@ -8,3 +9,6 @@ BACKUPSTRING='backup_'$DAY$MONTH$YEAR'_'$HOUR'_'$MINS
 mkdir $BACKUPSTRING
 cd $BACKUPSTRING
 mongodump
+git add .
+git commit -m "$BACKUPSTRING"
+git push 
