@@ -9,6 +9,7 @@ BACKUPSTRING='backup_'$DAY$MONTH$YEAR'_'$HOUR'_'$MINS
 mkdir $BACKUPSTRING
 cd $BACKUPSTRING
 mongodump
+git pull
 git add .
 git commit -m "$BACKUPSTRING"
 git push 
